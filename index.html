@@ -1,12 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <title>pen fight</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <title>Pen Fight</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
-    
+  <!-- Game UI -->
+  <header>
+	<h1>Pen Fight</h1>
+	<div id="controls">
+	  <button onclick="setDifficulty('easy')">Easy</button>
+	  <button onclick="setDifficulty('medium')">Medium</button>
+	  <button onclick="setDifficulty('hard')">Hard</button>
+	</div>
+  </header>
+
+  <!-- Game Area -->
+  <main>
+	<canvas id="gameCanvas" width="800" height="500"></canvas>
+  </main>
+
+  <!-- Game Scripts -->
+  <!-- <script></script> -->
 </body>
 </html>
