@@ -25,5 +25,5 @@ No frameworks. No external physics engines. Just raw vanilla code.
 ## 🚀 Getting Started
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/pen-fight.git
+   git clone https://github.com/xpolion2005/pen-fight.git
     ```
