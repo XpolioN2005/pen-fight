@@ -154,9 +154,14 @@ function resolveCollision(bodyA, bodyB, collision) {
 	bodyB.pos_y += correction.y * bodyB.invMass;
 
 	// contact point (midpoint for simplicity)
+	const contactPointA = getSupportPoint(bodyA.getVertices(), axis);
+	const contactPointB = getSupportPoint(bodyB.getVertices(), {
+		x: -axis.x,
+		y: -axis.y,
+	});
 	const contactPoint = {
-		x: (bodyA.pos_x + bodyB.pos_x) / 2,
-		y: (bodyA.pos_y + bodyB.pos_y) / 2,
+		x: (contactPointA.x + contactPointB.x) / 2,
+		y: (contactPointA.y + contactPointB.y) / 2,
 	};
 
 	// from COM to contact
@@ -223,6 +228,19 @@ function projectPolygon(axis, polygon) {
 		if (p > max) max = p;
 	}
 	return [min, max];
+}
+
+function getSupportPoint(polygon, axis) {
+	let bestProj = -Infinity;
+	let bestVertex = polygon[0];
+	for (let v of polygon) {
+		const proj = dot(v, axis);
+		if (proj > bestProj) {
+			bestProj = proj;
+			bestVertex = v;
+		}
+	}
+	return bestVertex;
 }
 
 function normalize(v) {
