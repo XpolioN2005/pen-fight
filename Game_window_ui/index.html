@@ -1,0 +1,259 @@
+
+<!--pen-fight-game/                 <-- Main Project Folder
+│
+├── index.html                  <-- Step 1: Main game window layout
+│   ├── Setup <div id="game-container"> for desk background
+│   ├── Add pen placeholders (<img src="...">)
+│   ├── Add UI elements: Score, Level, Buttons (Pause/Restart)
+│
+├── css/
+│   └── style.css               <-- Step 2: Styling & Layout
+│       ├── Style desk background (full screen or fixed size)
+│       ├── Position pens (absolute inside container)
+│       ├── Add score panel & chalkboard style
+│       ├── Pause/Restart button design
+│
+├── js/
+│   └── game.js                 <-- Step 3: Game Logic
+│       ├── Handle pen movement (keyboard/mouse/touch)
+│       ├── Collision detection between pens
+│       ├── Detect if pen falls off desk
+│       ├── Score update + Level progression
+│       ├── Pause/Restart functionality
+│
+├── assets/
+│   ├── images/                 <-- Step 4: Visual Assets
+│   │   ├── desk_bg.jpg         (desk background)
+│   │   ├── pen_blue.png        (player pen)
+│   │   ├── pen_black.png       (opponent pen)
+│   │   ├── chalkboard.png      (scoreboard / level display)
+│   │   └── pause_icon.png      (UI icon)
+│   │
+│   └── sounds/                 <-- Step 5: Sound Effects (optional)
+│       ├── hit.mp3             (when pens collide)
+│       ├── win.mp3             (when player wins)
+│       └── background.mp3      (loop music)
+│
+└── README.md                   <-- Step 6: Documentation
+        ├── How to run game
+        ├── Controls (keys/touch)
+        ├── Levels explanation
+        └── Future improvements
+
+-->
+
+<!-- Soumabha -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pen Fighting Game</title>
+  <style>
+    body {
+      margin: 0; padding: 0; height: 100vh;
+      display: flex; flex-direction: column;
+      background: #c79c63;
+      font-family: "Chalkduster", "Comic Sans MS", cursive;
+    }
+
+    /* Dashboard */
+    .dashboard {
+      background: #2f5d3a;
+      border: 10px solid #8b5a2b;
+      border-radius: 6px;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, .6);
+      color: #f5f5dc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      height: 15%;
+    }
+
+    .scoreboard {
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .menu-btn {
+      background: transparent;
+      border: 2px solid #f5f5dc;
+      border-radius: 5px;
+      padding: 8px 18px;
+      font-size: 1.3rem;
+      color: #f5f5dc;
+      cursor: pointer;
+      transition: background .3s ease, transform .2s ease;
+    }
+
+    .menu-btn:hover {
+      background: rgba(245, 245, 220, .2);
+      transform: scale(1.05);
+    }
+
+    /* Playbench */
+    .playbench {
+      flex: 1;
+      background: #c79c63;
+      box-shadow: inset 0 0 60px rgba(0, 0, 0, .3);
+      position: relative;
+    }
+
+    /* Menu Popup */
+    .menu-popup {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #2f5d3a;
+      color: #f5f5dc;
+      border: 4px solid #8b5a2b;
+      border-radius: 12px;
+      padding: 25px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      text-align: center;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, .6);
+      width: 280px;
+      animation: fadeIn .3s ease;
+      z-index: 10;
+    }
+
+    .menu-popup h2 {
+      margin: 0 0 12px;
+      font-size: 1.8rem;
+      text-decoration: underline;
+    }
+
+    .menu-popup .stats {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      line-height: 1.6;
+      padding: 10px;
+      background: rgba(0, 0, 0, .2);
+      border-radius: 8px;
+      width: 100%;
+    }
+
+    .menu-popup button {
+      background: transparent;
+      border: 2px solid #f5f5dc;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 1.1rem;
+      color: #f5f5dc;
+      cursor: pointer;
+      width: 100%;
+      transition: background .3s ease, transform .2s ease;
+    }
+
+    .menu-popup button:hover {
+      background: rgba(245, 245, 220, .2);
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -55%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dashboard -->
+  <div class="dashboard">
+    <div class="scoreboard">
+      You: <span id="youScore">0</span> | Bot: <span id="botScore">0</span>
+    </div>
+    <button class="menu-btn" onclick="toggleMenu()">Menu</button>
+  </div>
+
+  <!-- Play Area -->
+  <div class="playbench">
+    <div class="menu-popup" id="menuPopup">
+      <h2>Game Menu</h2>
+      <div class="stats">
+        🍫 Chocolates: <span id="menuChocolates">0</span><br/>
+        🔼 Level: <span id="menuLevel">1</span>
+      </div>
+      <button onclick="resumeGame()">▶ Resume</button>
+      <button onclick="restartGame()">🔄 Restart</button>
+      <button onclick="exitGame()">❌ Exit</button>
+    </div>
+  </div>
+
+  <script>
+    // Game variables
+    let youScore = 0;
+    let botScore = 0;
+    let chocolates = 0;
+    let level = 1;
+
+    const youScoreEl = document.getElementById('youScore');
+    const botScoreEl = document.getElementById('botScore');
+    const menuPopup = document.getElementById('menuPopup');
+    const menuChocolatesEl = document.getElementById('menuChocolates');
+    const menuLevelEl = document.getElementById('menuLevel');
+    const playbench = document.querySelector('.playbench');
+
+    function toggleMenu() {
+      if (menuPopup.style.display === 'flex') {
+        menuPopup.style.display = 'none';
+      } else {
+        menuPopup.style.display = 'flex';
+        updateMenuStats();
+      }
+    }
+
+    function resumeGame() { toggleMenu(); }
+
+    function restartGame() {
+      youScore = 0; botScore = 0; chocolates = 0; level = 1;
+      updateDashboard(); updateMenuStats(); toggleMenu();
+    }
+
+    function exitGame() { alert('Exiting game...'); toggleMenu(); }
+
+    function updateDashboard() {
+      youScoreEl.textContent = youScore;
+      botScoreEl.textContent = botScore;
+    }
+
+    function updateMenuStats() {
+      menuChocolatesEl.textContent = chocolates;
+      menuLevelEl.textContent = level;
+    }
+
+    // Award chocolates and levels
+    function addPoints(points) {
+      const prevScore = youScore;
+      youScore += points;
+
+      const prevChoc = Math.floor(prevScore / 10);
+      const newChoc = Math.floor(youScore / 10);
+      chocolates += Math.max(0, newChoc - prevChoc);
+
+      const prevLvlStep = Math.floor(prevScore / 50);
+      const newLvlStep = Math.floor(youScore / 50);
+      level += Math.max(0, newLvlStep - prevLvlStep);
+
+      updateDashboard(); updateMenuStats();
+    }
+
+    // Close menu when clicking outside it
+    playbench.addEventListener('click', function(e) {
+      if (menuPopup.style.display === 'flex' && !menuPopup.contains(e.target) && !e.target.classList.contains('menu-btn')) {
+        menuPopup.style.display = 'none';
+      }
+    });
+
+   
+  </script>
+</body>
+</html>
