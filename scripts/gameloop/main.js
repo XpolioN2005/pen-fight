@@ -3,9 +3,9 @@ const ctx = canvas.getContext("2d");
 
 // Create two rigid bodies
 const pen1 = new RigidBody(300, 300, 150, 20, 1);
-const pen2 = new RigidBody(500, 300, 150, 20, 10);
+const pen2 = new RigidBody(500, 300, 150, 20, 0.5);
 
-pen1.applyImpulse(500, 0); // give pen1 some velocity
+pen1.applyImpulse(1000, 0); // give pen1 some velocity
 pen2.angle = 0.5; // rotate pen2 a bit
 
 function drawBody(body, color = "cyan") {
