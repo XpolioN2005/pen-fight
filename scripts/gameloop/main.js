@@ -51,3 +51,69 @@ function loop(time) {
 }
 
 loop(lastTime);
+
+
+//just to experiment things a bit... i'm writng this stuffs
+// for now main.js should look like this ... check and keep or remove things and structures @@@xpo
+
+// import { Player } from "../entities/player.js";
+// import { Bot } from "../ai/bot.js";
+// import { checkCollision, resolveCollision } from "../physics/collision.js";
+
+// const canvas = document.getElementById("gameCanvas");
+// const ctx = canvas.getContext("2d");
+
+// // Create entities
+// const player = new Player(300, 300, 150, 20, 1, {
+//   up: "KeyW",
+//   down: "KeyS",
+//   left: "KeyA",
+//   right: "KeyD",
+//   attack: "Space"
+// });
+
+// const bot = new Bot(500, 300, 150, 20, 1, player);
+
+// function drawBody(body, color = "cyan") {
+//   const verts = body.getVertices();
+//   ctx.beginPath();
+//   ctx.moveTo(verts[0].x, verts[0].y);
+//   for (let i = 1; i < verts.length; i++) {
+//     ctx.lineTo(verts[i].x, verts[i].y);
+//   }
+//   ctx.closePath();
+//   ctx.strokeStyle = color;
+//   ctx.stroke();
+// }
+
+// let lastTime = performance.now();
+// function loop(time) {
+//   const dt = Math.min((time - lastTime) / 1000, 0.016); // cap at 60 FPS step
+//   lastTime = time;
+
+//   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+//   // Control / AI
+//   player.updateControl(dt);
+//   bot.updateAI(dt);
+
+//   // Physics integration
+//   player.integrateForces(dt);
+//   bot.integrateForces(dt);
+//   player.update(dt);
+//   bot.update(dt);
+
+//   // Collision iterations
+//   for (let i = 0; i < 5; i++) {
+//     const collision = checkCollision(player, bot);
+//     if (collision) resolveCollision(player, bot, collision);
+//   }
+
+//   // Draw
+//   drawBody(player, "cyan");
+//   drawBody(bot, "lime");
+
+//   requestAnimationFrame(loop);
+// }
+
+// loop(lastTime);
