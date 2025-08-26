@@ -6,22 +6,36 @@ class Bot extends RigidBody {
 		this.hasMove = true;
 	}
 
-	makeMove() {
+	makeMove(player) {
 		if (!this.isTurn) return;
 
-		// Bot aims roughly "forward-left" with some randomness
-		const baseStrength = 500;
-		const randomAngle = (Math.random() - 0.5) * 0.5; // -0.25rad to +0.25rad
-		const nx = Math.cos(Math.PI + randomAngle); // facing left
-		const ny = Math.sin(Math.PI + randomAngle);
+		const baseStrength = 1000;
 
-		// Apply impulse in that direction
+		// --- Direction from bot to player ---
+		let dx = player.pos_x - this.pos_x;
+		let dy = player.pos_y - this.pos_y;
+
+		// Normalize
+		const len = Math.sqrt(dx * dx + dy * dy);
+		if (len > 0) {
+			dx /= len;
+			dy /= len;
+		}
+
+		// Add some randomness so it's not perfect aim
+		const spread = 0.2; // radians
+		const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * spread;
+		const nx = Math.cos(angle);
+		const ny = Math.sin(angle);
+
+		// Apply impulse toward player
 		this.applyImpulse(nx * baseStrength, ny * baseStrength);
 
-		// Add some torque bias (random spin)
+		// Add some torque for spin
 		const torque = (Math.random() - 0.5) * 30;
 		this.applyTorque(torque);
 
+		// End turn
 		// this.isTurn = false;
 	}
 }
