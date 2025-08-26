@@ -1,13 +1,14 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// Create two rigid bodies
-const pen1 = new RigidBody(300, 300, 150, 20, 1);
-const pen2 = new RigidBody(500, 300, 150, 20, 0.5);
+// --- Create Player & Bot ---
+const player = new Player(400, 400, 150, 20, 1, "Player");
+const bot = new Bot(400, 200, 150, 20, 1, "Bot");
 
-pen1.applyImpulse(1000, 0); // give pen1 some velocity
-pen2.angle = 0.5; // rotate pen2 a bit
+// Player starts
+player.isTurn = true;
 
+// --- Draw helper ---
 function drawBody(body, color = "cyan") {
 	const verts = body.getVertices();
 	ctx.beginPath();
@@ -17,116 +18,91 @@ function drawBody(body, color = "cyan") {
 	}
 	ctx.closePath();
 	ctx.strokeStyle = color;
+	ctx.lineWidth = 2;
 	ctx.stroke();
 }
 
-let lastTime = performance.now();
-function loop(time) {
-	const dt = Math.min((time - lastTime) / 1000, 0.016); // cap at 60 FPS step
+function isOutOfBounds(body) {
+	const verts = body.getVertices();
+	return verts.some(
+		(v) => v.x < 0 || v.x > canvas.width || v.y < 0 || v.y > canvas.height
+	);
+}
 
+function endTurn(current, next) {
+	current.isTurn = false;
+	next.isTurn = true;
+}
+
+// --- GAME LOOP ---
+let lastTime = performance.now();
+// --- GAME LOOP ---
+function loop(time) {
+	const dt = Math.min((time - lastTime) / 1000, 0.016);
 	lastTime = time;
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	// Physics step
-	pen1.integrateForces(dt);
-	pen2.integrateForces(dt);
-	pen1.update(dt);
-	pen2.update(dt);
+	// --- Physics step ---
+	player.integrateForces(dt);
+	bot.integrateForces(dt);
+	player.update(dt);
+	bot.update(dt);
 
+	// Collision handling
 	for (let i = 0; i < 5; i++) {
-		// 5 iterations = more stable
-		const collision = checkCollision(pen1, pen2);
-		if (collision) resolveCollision(pen1, pen2, collision);
+		const collision = checkCollision(player, bot);
+		if (collision) resolveCollision(player, bot, collision);
 	}
 
-	// Collision test
-	const hit = resolveCollision(pen1.getVertices(), pen2.getVertices());
+	// --- Win/Lose ---
+	if (isOutOfBounds(player)) {
+		alert("Bot Wins! Player out of bench!");
+		return;
+	}
+	if (isOutOfBounds(bot)) {
+		alert("Player Wins! Bot out of bench!");
+		return;
+	}
 
-	// Draw
-	drawBody(pen1, hit ? "red" : "cyan");
-	drawBody(pen2, hit ? "red" : "lime");
+	// --- Turn switch check ---
+	if (player.isTurn && player.hasMoved && player.isResting()) {
+		console.log("Player finished turn");
+		player.isTurn = false;
+		bot.isTurn = true;
+		bot.hasMoved = false; // reset for bot
+	}
+
+	if (bot.isTurn) {
+		if (!bot.hasMoved) {
+			bot.makeMove(); // happens once
+			bot.hasMoved = true;
+		} else if (bot.isResting()) {
+			console.log("Bot finished turn");
+			bot.isTurn = false;
+			player.isTurn = true;
+			player.hasMoved = false; // reset for player
+		}
+	}
+
+	console.log("bot: ", bot.isTurn, " player: ", player.isTurn);
+
+	// --- Draw ---
+	drawBody(player, "cyan");
+	drawBody(bot, "lime");
 
 	requestAnimationFrame(loop);
 }
 
+// --- Player Input ---
+canvas.addEventListener("mousedown", (e) => {
+	player.startDrag(e, canvas);
+});
+
+canvas.addEventListener("mouseup", (e) => {
+	player.endDrag(e, canvas);
+	// bot.isTurn = true; // give turn to bot
+});
+
+// Start game
 loop(lastTime);
-
-
-//just to experiment things a bit... i'm writng this stuffs
-// for now main.js should look like this ... check and keep or remove things and structures @@@xpo
-
-// const canvas = document.getElementById("gameCanvas");
-// const ctx = canvas.getContext("2d");
-
-// // Create Player & Bot
-// const player = new Player(300, 300, 150, 20, 1);
-// const bot = new Bot(500, 300, 150, 20, 1);
-
-// // --- DRAW ---
-// function drawBody(body, color = "cyan") {
-// 	const verts = body.getVertices();
-// 	ctx.beginPath();
-// 	ctx.moveTo(verts[0].x, verts[0].y);
-// 	for (let i = 1; i < verts.length; i++) {
-// 		ctx.lineTo(verts[i].x, verts[i].y);
-// 	}
-// 	ctx.closePath();
-// 	ctx.strokeStyle = color;
-// 	ctx.stroke();
-// }
-
-// function isOutOfBounds(body) {
-// 	const verts = body.getVertices();
-// 	return verts.some(v => v.x < 0 || v.x > canvas.width || v.y < 0 || v.y > canvas.height);
-// }
-
-// // --- LOOP ---
-// let lastTime = performance.now();
-// function loop(time) {
-// 	const dt = Math.min((time - lastTime) / 1000, 0.016);
-// 	lastTime = time;
-
-// 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-// 	// Physics
-// 	player.integrateForces(dt);
-// 	bot.integrateForces(dt);
-// 	player.update(dt);
-// 	bot.update(dt);
-
-// 	for (let i = 0; i < 5; i++) {
-// 		const collision = checkCollision(player, bot);
-// 		if (collision) resolveCollision(player, bot, collision);
-// 	}
-
-// 	// Check win/lose
-// 	if (isOutOfBounds(player)) {
-// 		alert("Bot Wins! Player out of bench!");
-// 		return;
-// 	}
-// 	if (isOutOfBounds(bot)) {
-// 		alert("Player Wins! Bot out of bench!");
-// 		return;
-// 	}
-
-// 	// Bot turn
-// 	if (bot.isTurn) {
-// 		bot.makeMove();
-// 		player.isTurn = true;
-// 	}
-
-// 	// Draw
-// 	drawBody(player, "cyan");
-// 	drawBody(bot, "lime");
-
-// 	requestAnimationFrame(loop);
-// }
-
-// // --- Player input ---
-// canvas.addEventListener("mouseup", (e) => {
-// 	player.handleInput(e, canvas);
-// 	bot.isTurn = true;
-// });
-
-// loop(lastTime);

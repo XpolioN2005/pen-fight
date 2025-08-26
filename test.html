@@ -2,28 +2,39 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Physics Test</title>
+		<title>Pen Fight Physics Test</title>
 		<style>
 			body {
 				background: #222;
 				color: #eee;
 				text-align: center;
+				font-family: sans-serif;
+			}
+			h1 {
+				margin-top: 20px;
 			}
 			canvas {
 				background: #111;
 				display: block;
 				margin: 20px auto;
+				border: 2px solid #444;
 			}
 		</style>
 	</head>
 	<body>
-		<h1>Pen Fight Physics Test</h1>
+		<h1>🖊️ Pen Fight Physics Test</h1>
 		<canvas id="gameCanvas" width="800" height="600"></canvas>
 
-		<!-- Import your physics engine -->
+		<!-- Physics Core -->
 		<script src="scripts/physics/helper.js"></script>
 		<script src="scripts/physics/rigidBody.js"></script>
 		<script src="scripts/physics/collision.js"></script>
+
+		<!-- Game Entities -->
+		<script src="scripts/entities/player.js"></script>
+		<script src="scripts/entities/bot.js"></script>
+
+		<!-- Main Game Loop -->
 		<script src="scripts/gameloop/main.js"></script>
 	</body>
 </html>
