@@ -75,7 +75,7 @@ function loop(time) {
 
 	if (bot.isTurn) {
 		if (!bot.hasMoved) {
-			bot.makeMove(); // happens once
+			bot.makeMove(player); // happens once
 			bot.hasMoved = true;
 		} else if (bot.isResting()) {
 			console.log("Bot finished turn");
