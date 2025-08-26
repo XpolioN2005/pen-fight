@@ -18,7 +18,7 @@ class RigidBody {
 		this.torque = 0;
 
 		// inertia (rectangle formula)
-		this.inertia = (mass * (w ** 2 + h ** 2)) / 12;
+		this.inertia = (mass * (w * h)) / 12; // simpler, smaller inertia
 		this.invInertia = mass === 0 ? 0 : 1 / this.inertia;
 	}
 
@@ -35,6 +35,31 @@ class RigidBody {
 
 	applyTorque(t) {
 		this.torque += t;
+	}
+
+	applyImpulseAtPoint(ix, iy, px, py) {
+		const relX = px - this.pos_x;
+		const relY = py - this.pos_y;
+
+		// linear
+		this.vx += ix / this.mass;
+		this.vy += iy / this.mass;
+
+		// angular
+		const torque = relX * iy - relY * ix;
+		const inertia = (this.mass * (this.w ** 2 + this.h ** 2)) / 12;
+
+		// scale torque
+		const scaled = clamp(torque, -9000, 9000);
+		this.angularVelocity += scaled / inertia;
+	}
+
+	isResting() {
+		if (this.vx == 0 && this.vy == 0 && this.angularVelocity == 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	// --- Physics step ---
@@ -56,9 +81,17 @@ class RigidBody {
 		this.angle += this.angularVelocity * dt;
 
 		// simple damping so pens don't spin/slide forever
-		this.vx *= 0.99;
-		this.vy *= 0.99;
+		this.vx *= 0.95;
+		this.vy *= 0.95;
 		this.angularVelocity *= 0.98;
+
+		const thereshold = 0.5;
+
+		if (Math.abs(this.vx) < thereshold) this.vx = 0;
+		if (Math.abs(this.vy) < thereshold) this.vy = 0;
+		if (Math.abs(this.angularVelocity) < thereshold) this.angularVelocity = 0;
+
+		// console.log("ω:", this.vx, "θ:", this.vy);
 	}
 
 	// --- Collision geometry ---
