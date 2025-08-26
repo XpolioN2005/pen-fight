@@ -55,3 +55,29 @@
 // 		this.ctx.stroke();
 // 	}
 // }
+
+class Renderer {
+  constructor(canvas) {
+    this.ctx = canvas.getContext("2d");
+    this.canvas = canvas;
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  drawShape(x, y, w, h, rotation = 0, color = "white") {
+    this.ctx.save();
+    this.ctx.translate(x, y);
+    this.ctx.rotate(rotation);
+    this.ctx.fillStyle = color;
+    this.ctx.fillRect(-w / 2, -h / 2, w, h);
+    this.ctx.restore();
+  }
+
+  drawText(text, x, y, color = "white", size = "16px") {
+    this.ctx.fillStyle = color;
+    this.ctx.font = `${size} Arial`;
+    this.ctx.fillText(text, x, y);
+  }
+}

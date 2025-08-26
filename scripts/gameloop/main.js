@@ -51,3 +51,82 @@ function loop(time) {
 }
 
 loop(lastTime);
+
+
+//just to experiment things a bit... i'm writng this stuffs
+// for now main.js should look like this ... check and keep or remove things and structures @@@xpo
+
+// const canvas = document.getElementById("gameCanvas");
+// const ctx = canvas.getContext("2d");
+
+// // Create Player & Bot
+// const player = new Player(300, 300, 150, 20, 1);
+// const bot = new Bot(500, 300, 150, 20, 1);
+
+// // --- DRAW ---
+// function drawBody(body, color = "cyan") {
+// 	const verts = body.getVertices();
+// 	ctx.beginPath();
+// 	ctx.moveTo(verts[0].x, verts[0].y);
+// 	for (let i = 1; i < verts.length; i++) {
+// 		ctx.lineTo(verts[i].x, verts[i].y);
+// 	}
+// 	ctx.closePath();
+// 	ctx.strokeStyle = color;
+// 	ctx.stroke();
+// }
+
+// function isOutOfBounds(body) {
+// 	const verts = body.getVertices();
+// 	return verts.some(v => v.x < 0 || v.x > canvas.width || v.y < 0 || v.y > canvas.height);
+// }
+
+// // --- LOOP ---
+// let lastTime = performance.now();
+// function loop(time) {
+// 	const dt = Math.min((time - lastTime) / 1000, 0.016);
+// 	lastTime = time;
+
+// 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+// 	// Physics
+// 	player.integrateForces(dt);
+// 	bot.integrateForces(dt);
+// 	player.update(dt);
+// 	bot.update(dt);
+
+// 	for (let i = 0; i < 5; i++) {
+// 		const collision = checkCollision(player, bot);
+// 		if (collision) resolveCollision(player, bot, collision);
+// 	}
+
+// 	// Check win/lose
+// 	if (isOutOfBounds(player)) {
+// 		alert("Bot Wins! Player out of bench!");
+// 		return;
+// 	}
+// 	if (isOutOfBounds(bot)) {
+// 		alert("Player Wins! Bot out of bench!");
+// 		return;
+// 	}
+
+// 	// Bot turn
+// 	if (bot.isTurn) {
+// 		bot.makeMove();
+// 		player.isTurn = true;
+// 	}
+
+// 	// Draw
+// 	drawBody(player, "cyan");
+// 	drawBody(bot, "lime");
+
+// 	requestAnimationFrame(loop);
+// }
+
+// // --- Player input ---
+// canvas.addEventListener("mouseup", (e) => {
+// 	player.handleInput(e, canvas);
+// 	bot.isTurn = true;
+// });
+
+// loop(lastTime);
