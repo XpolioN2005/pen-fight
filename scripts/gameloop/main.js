@@ -1,14 +1,14 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// --- Create Player & Bot ---
+// === GAME ENTITIES ===
 const player = new Player(400, 400, 150, 20, 1, "Player");
 const bot = new Bot(400, 200, 150, 20, 1, "Bot");
 
 // Player starts
 player.isTurn = true;
 
-// --- Draw helper ---
+// === HELPERS ===
 function drawBody(body, color = "cyan") {
 	const verts = body.getVertices();
 	ctx.beginPath();
@@ -29,80 +29,97 @@ function isOutOfBounds(body) {
 	);
 }
 
-function endTurn(current, next) {
-	current.isTurn = false;
-	next.isTurn = true;
-}
-
-// --- GAME LOOP ---
-let lastTime = performance.now();
-// --- GAME LOOP ---
-function loop(time) {
-	const dt = Math.min((time - lastTime) / 1000, 0.016);
-	lastTime = time;
-
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	// --- Physics step ---
-	player.integrateForces(dt);
-	bot.integrateForces(dt);
-	player.update(dt);
-	bot.update(dt);
-
-	// Collision handling
-	for (let i = 0; i < 5; i++) {
-		const collision = checkCollision(player, bot);
-		if (collision) resolveCollision(player, bot, collision);
-	}
-
-	// --- Win/Lose ---
+function handleOutOfBounds() {
 	if (isOutOfBounds(player)) {
 		alert("Bot Wins! Player out of bench!");
-		return;
+		return true;
 	}
 	if (isOutOfBounds(bot)) {
 		alert("Player Wins! Bot out of bench!");
-		return;
+		return true;
 	}
+	return false;
+}
 
-	// --- Turn switch check ---
+// === TURN MANAGEMENT ===
+function handleTurnSwitch() {
+	// Player finished
 	if (player.isTurn && player.hasMoved && player.isResting()) {
 		console.log("Player finished turn");
 		player.isTurn = false;
 		bot.isTurn = true;
-		bot.hasMoved = false; // reset for bot
+		bot.hasMoved = false;
 	}
 
+	// Bot turn
 	if (bot.isTurn) {
 		if (!bot.hasMoved) {
-			bot.makeMove(player); // happens once
+			bot.makeMove(player);
 			bot.hasMoved = true;
 		} else if (bot.isResting()) {
 			console.log("Bot finished turn");
 			bot.isTurn = false;
 			player.isTurn = true;
-			player.hasMoved = false; // reset for player
+			player.hasMoved = false;
 		}
 	}
-
-	console.log("bot: ", bot.isTurn, " player: ", player.isTurn);
-
-	// --- Draw ---
-	drawBody(player, "cyan");
-	drawBody(bot, "lime");
-
-	requestAnimationFrame(loop);
+	console.log("bot:", bot.isTurn, " player:", player.isTurn);
 }
 
-// --- Player Input ---
-canvas.addEventListener("mousedown", (e) => {
-	player.startDrag(e, canvas);
-});
+// === PHYSICS & COLLISION ===
+function updatePhysics(dt) {
+	player.integrateForces(dt);
+	bot.integrateForces(dt);
 
-canvas.addEventListener("mouseup", (e) => {
-	player.endDrag(e, canvas);
-	// bot.isTurn = true; // give turn to bot
-});
+	player.update(dt);
+	bot.update(dt);
 
-// Start game
-loop(lastTime);
+	for (let i = 0; i < 5; i++) {
+		const collision = checkCollision(player, bot);
+		if (collision) resolveCollision(player, bot, collision);
+	}
+}
+
+// === DRAWING ===
+function render() {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	drawBody(player, "cyan");
+	drawBody(bot, "lime");
+}
+
+// === GAME LOOP ===
+let lastTime = performance.now();
+
+function gameLoop(time) {
+	const dt = Math.min((time - lastTime) / 1000, 0.016);
+	lastTime = time;
+
+	updatePhysics(dt);
+
+	if (handleOutOfBounds()) return;
+
+	handleTurnSwitch();
+
+	render();
+
+	requestAnimationFrame(gameLoop);
+}
+
+// === INPUT HANDLING ===
+function setupInput() {
+	canvas.addEventListener("mousedown", (e) => {
+		player.startDrag(e, canvas);
+	});
+
+	canvas.addEventListener("mouseup", (e) => {
+		player.endDrag(e, canvas);
+	});
+}
+
+// === INIT GAME ===
+function init() {
+	setupInput();
+	gameLoop(lastTime);
+}
+
+init();
