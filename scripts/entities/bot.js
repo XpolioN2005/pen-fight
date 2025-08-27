@@ -10,7 +10,7 @@ class Bot extends RigidBody {
 	makeMove(player) {
 		if (!this.isTurn) return;
 
-		const baseStrength = 1000;
+		const baseStrength = 900;
 
 		// --- Direction from bot to player ---
 		let dx = player.pos_x - this.pos_x;
