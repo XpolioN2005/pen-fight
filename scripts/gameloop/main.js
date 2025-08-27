@@ -16,7 +16,7 @@ export let bot;
 
 function createEntities() {
 	player = new Player(400, 400, 150, 20, 1, "Player");
-	bot = new Bot(400, 200, 150, 20, 1, "Bot");
+	bot = new Bot(400, 200, 150, 20, 0.7, "Bot");
 
 	// Player starts
 	player.isTurn = true;
