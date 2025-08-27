@@ -1,3 +1,4 @@
+import RigidBody from "../physics/rigidBody.js";
 class Bot extends RigidBody {
 	constructor(x, y, w, h, mass = 1, name = "Bot") {
 		super(x, y, w, h, mass);
@@ -39,3 +40,5 @@ class Bot extends RigidBody {
 		// this.isTurn = false;
 	}
 }
+
+export default Bot;

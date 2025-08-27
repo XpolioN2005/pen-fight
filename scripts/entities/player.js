@@ -1,3 +1,4 @@
+import RigidBody from "../physics/rigidBody.js";
 class Player extends RigidBody {
 	constructor(x, y, w, h, mass = 1, name = "Player") {
 		super(x, y, w, h, mass);
@@ -9,40 +10,76 @@ class Player extends RigidBody {
 		this.dragging = false;
 		this.startX = 0;
 		this.startY = 0;
+
+		this.currentX = this.x;
+		this.currentY = this.y;
+
+		this.isGameOver = false;
+	}
+	getEventPos(event, canvas) {
+		const rect = canvas.getBoundingClientRect();
+		if (event.touches && event.touches[0]) {
+			// touch event
+			return {
+				x: event.touches[0].clientX - rect.left,
+				y: event.touches[0].clientY - rect.top,
+			};
+		} else {
+			// mouse event
+			return {
+				x: event.clientX - rect.left,
+				y: event.clientY - rect.top,
+			};
+		}
 	}
 
 	startDrag(event, canvas) {
 		if (!this.isTurn) return;
 
-		const rect = canvas.getBoundingClientRect();
-		this.startX = event.clientX - rect.left;
-		this.startY = event.clientY - rect.top;
+		const pos = this.getEventPos(event, canvas);
+		this.startX = pos.x;
+		this.startY = pos.y;
 		this.dragging = true;
+	}
+
+	updateDrag(event, canvas) {
+		if (!this.dragging) return;
+		const rect = canvas.getBoundingClientRect();
+		this.currentX = (event.clientX || event.touches[0].clientX) - rect.left;
+		this.currentY = (event.clientY || event.touches[0].clientY) - rect.top;
 	}
 
 	endDrag(event, canvas) {
 		if (!this.isTurn || !this.dragging) return;
 
-		const rect = canvas.getBoundingClientRect();
-		const endX = event.clientX - rect.left;
-		const endY = event.clientY - rect.top;
+		const pos = this.getEventPos(event, canvas);
+		const endX = pos.x;
+		const endY = pos.y;
 
-		// drag vector (from end → start) = opposite launch
+		// drag vector (from end → start)
 		const dx = this.startX - endX;
 		const dy = this.startY - endY;
 
-		// scale force
-		const strength = Math.min(Math.hypot(dx, dy) * 10, 1200); // cap max force
+		// ignore tiny drags (deadzone)
+		if (Math.hypot(dx, dy) < 5) {
+			this.dragging = false;
+			return;
+		}
+
+		// scale & cap force
+		const strength = Math.min(Math.hypot(dx, dy) * 10, 1200);
 
 		// normalize
 		const len = Math.hypot(dx, dy) || 1;
 		const nx = dx / len;
 		const ny = dy / len;
 
-		// --- apply impulse at drag release point ---
+		// apply impulse at release point
 		this.applyImpulseAtPoint(nx * strength, ny * strength, endX, endY);
 
 		this.dragging = false;
 		this.hasMoved = true;
 	}
 }
+
+export default Player;

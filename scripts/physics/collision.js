@@ -1,5 +1,13 @@
+import {
+	normalize,
+	projectPolygon,
+	dot,
+	cross,
+	getSupportPoint,
+} from "./helper.js";
+
 // --- SAT collision + response ---
-function checkCollision(bodyA, bodyB) {
+export function checkCollision(bodyA, bodyB) {
 	const polyA = bodyA.getVertices();
 	const polyB = bodyB.getVertices();
 
@@ -43,7 +51,7 @@ function checkCollision(bodyA, bodyB) {
 	return { overlap, axis: smallestAxis };
 }
 
-function resolveCollision(bodyA, bodyB, collision) {
+export function resolveCollision(bodyA, bodyB, collision) {
 	if (!collision) return;
 
 	const { overlap, axis } = collision;

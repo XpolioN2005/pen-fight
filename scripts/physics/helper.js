@@ -1,21 +1,20 @@
 // --- helpers ---
-
-function dot(a, b) {
+export function dot(a, b) {
 	return a.x * b.x + a.y * b.y;
 }
 
-function cross(a, b) {
+export function cross(a, b) {
 	// 2D scalar cross product
 	return a.x * b.y - a.y * b.x;
 }
 
-function normalize(v) {
+export function normalize(v) {
 	const len = Math.hypot(v.x, v.y);
 	if (len === 0) return { x: 0, y: 0 };
 	return { x: v.x / len, y: v.y / len };
 }
 
-function projectPolygon(axis, polygon) {
+export function projectPolygon(axis, polygon) {
 	let min = dot(axis, polygon[0]);
 	let max = min;
 	for (let i = 1; i < polygon.length; i++) {
@@ -26,7 +25,7 @@ function projectPolygon(axis, polygon) {
 	return [min, max];
 }
 
-function getSupportPoint(polygon, axis) {
+export function getSupportPoint(polygon, axis) {
 	let bestProj = -Infinity;
 	let bestVertex = polygon[0];
 	for (let v of polygon) {
@@ -39,6 +38,6 @@ function getSupportPoint(polygon, axis) {
 	return bestVertex;
 }
 
-function clamp(value, min, max) {
+export function clamp(value, min, max) {
 	return Math.min(Math.max(value, min), max);
 }
