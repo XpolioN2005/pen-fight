@@ -31,7 +31,7 @@ No frameworks. No external physics engines. Just raw vanilla code.
 1. Clone this repository:
    ```bash
    git clone https://github.com/XpolioN2005/pen-fight.git
-````
+   ```
 
 2. Open `index.html` in your browser.
 
