@@ -1,3 +1,4 @@
+import { clamp } from "./helper.js";
 class RigidBody {
 	constructor(x, y, w, h, mass = 1) {
 		// Core properties
@@ -121,3 +122,5 @@ class RigidBody {
 		];
 	}
 }
+
+export default RigidBody;

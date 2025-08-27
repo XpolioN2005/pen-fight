@@ -35,14 +35,26 @@ class Renderer {
 		this.ctx.lineWidth = 2;
 		this.ctx.stroke();
 	}
-
 	drawBodyImage(body, image) {
 		const { pos_x, pos_y, angle, w, h } = body;
+
+		const aspect = image.width / image.height;
+		let drawW = w;
+		let drawH = h;
+
+		// Adjust based on aspect ratio
+		if (drawW / drawH > aspect) {
+			drawW = drawH * aspect;
+		} else {
+			drawH = drawW / aspect;
+		}
 
 		this.ctx.save();
 		this.ctx.translate(pos_x, pos_y);
 		this.ctx.rotate(angle);
-		this.ctx.drawImage(image, -w / 2, -h / 2, w, h);
+		this.ctx.drawImage(image, -drawW / 2, -drawH / 2, drawW, drawH);
 		this.ctx.restore();
 	}
 }
+
+export default Renderer;

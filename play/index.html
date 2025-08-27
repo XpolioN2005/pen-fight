@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Pen Fighting Game</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<!-- Dashboard -->
+		<div class="dashboard">
+			<div class="scoreboard">
+				You: <span id="youScore">0</span> | Bot: <span id="botScore">0</span>
+			</div>
+			<button class="menu-btn" onclick="toggleMenu()">Menu</button>
+		</div>
+
+		<p id="turn">TURN</p>
+
+		<!-- Play Area -->
+		<div class="playbench">
+			<main>
+				<canvas id="gameCanvas" width="800" height="500"></canvas>
+			</main>
+			<div class="menu-popup" id="menuPopup">
+				<h2>Game Menu</h2>
+				<div class="stats">🔼 Level: <span id="menuLevel">1</span></div>
+				<button onclick="resumeGame()">▶ Resume</button>
+				<button onclick="restartGame()">🔄 Restart</button>
+			</div>
+			<!-- Game Over Screen -->
+			<div id="gameOverScreen" class="game-over-screen">
+				<div class="game-over-content">
+					<h1 id="gameOverText">Game Over</h1>
+					<button onclick="restartGame()">🔄 Restart</button>
+				</div>
+			</div>
+		</div>
+
+		<script type="module" src="script.js"></script>
+		<script type="module" src="../scripts/gameloop/main.js"></script>
+	</body>
+</html>
