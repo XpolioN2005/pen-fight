@@ -1,4 +1,4 @@
-Here’s a complete polished **README.md** for your rep
+
 # 🖊️ Pen Fight (Vanilla JS)
 
 A web-based version of the classic **Pen Fight game** we used to play on school desks — built with **pure HTML, CSS, and JavaScript** (no frameworks, no libraries).
