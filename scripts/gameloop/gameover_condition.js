@@ -104,6 +104,8 @@ export function isOutOfBounds(player, body, canvas, threshold = 0.4) {
 	// threshold=0.4 → if 40%+ area outside → true
 }
 
+export let youScore = 0;
+export let botScore = 0;
 export function handleOutOfBounds(player, bot, canvas) {
 	const gameOverScreen = document.getElementById("gameOverScreen");
 	const gameOverText = document.getElementById("gameOverText");
@@ -111,12 +113,14 @@ export function handleOutOfBounds(player, bot, canvas) {
 		if (isOutOfBounds(player, player, canvas)) {
 			gameOverText.textContent = "Bot Wins! You Lose!";
 			gameOverScreen.style.display = "flex";
+			botScore += 1;
 			return true;
 		}
 
 		if (isOutOfBounds(player, bot, canvas)) {
 			gameOverText.textContent = "You Win!";
 			gameOverScreen.style.display = "flex";
+			youScore += 1;
 			return true;
 		}
 	}

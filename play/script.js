@@ -1,8 +1,6 @@
 import { startGame } from "../scripts/gameloop/main.js";
+import { botScore, youScore } from "../scripts/gameloop/gameover_condition.js";
 
-let youScore = 0;
-let botScore = 0;
-let chocolates = 0;
 let level = 1;
 
 const youScoreEl = document.getElementById("youScore");
@@ -11,7 +9,6 @@ const menuPopup = document.getElementById("menuPopup");
 const menuLevelEl = document.getElementById("menuLevel");
 const playbench = document.querySelector(".playbench");
 const gameOverScreen = document.getElementById("gameOverScreen");
-const gameOverText = document.getElementById("gameOverText");
 
 function toggleMenu(state = "toggle", type = "menu") {
 	const target = type === "gameover" ? gameOverScreen : menuPopup;
@@ -38,9 +35,6 @@ function restartGame() {
 	menuPopup.classList.remove("active");
 	gameOverScreen.style.display = "none";
 
-	youScore = 0;
-	botScore = 0;
-	chocolates = 0;
 	level = 1;
 
 	startGame();

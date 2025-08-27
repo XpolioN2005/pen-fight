@@ -3,28 +3,98 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/x-icon" href="favicon.ico" />
-		<title>Pen Fight</title>
+		<title>Pen Fighting Game</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&display=swap"
+			rel="stylesheet" />
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				font-family: "Arial", sans-serif;
+				background: url("assets/Screenshot\ 2025-08-22\ 215141.png") no-repeat
+					center center/cover;
+				height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+				color: white;
+				font-family: "Cabin Sketch", cursive;
+			}
 
-		<!-- External CSS -->
-		<link rel="stylesheet" href="style/style.css" />
+			.container {
+				animation: fadeIn 2s ease-in-out;
+			}
+
+			h1 {
+				font-size: 3rem;
+				margin-bottom: 10px;
+				animation: slideDown 1.5s ease-in-out;
+			}
+
+			p {
+				font-size: 1.2rem;
+				margin-bottom: 20px;
+				animation: slideUp 1.5s ease-in-out;
+			}
+
+			.btn {
+				padding: 12px 25px;
+				font-size: 1.2rem;
+				color: white;
+				background: #e74c3c;
+				border: none;
+				border-radius: 8px;
+				cursor: pointer;
+				transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+				animation: fadeIn 2.5s ease-in-out;
+			}
+
+			.btn:hover {
+				box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+				background: #bb2e1e;
+				transform: scale(1.05);
+			}
+
+			/* Animations */
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+				}
+				to {
+					opacity: 1;
+				}
+			}
+
+			@keyframes slideDown {
+				from {
+					transform: translateY(-50px);
+					opacity: 0;
+				}
+				to {
+					transform: translateY(0);
+					opacity: 1;
+				}
+			}
+
+			@keyframes slideUp {
+				from {
+					transform: translateY(50px);
+					opacity: 0;
+				}
+				to {
+					transform: translateY(0);
+					opacity: 1;
+				}
+			}
+		</style>
 	</head>
 	<body>
-		<!-- Game UI -->
-		<header>
-			<h1>Pen Fight</h1>
-			<div id="controls">
-				<button onclick="setDifficulty('easy')">Easy</button>
-				<button onclick="setDifficulty('medium')">Medium</button>
-				<button onclick="setDifficulty('hard')">Hard</button>
-			</div>
-		</header>
-
-		<!-- Game Area -->
-		<main>
-			<canvas id="gameCanvas"></canvas>
-		</main>
-
-		<script type="module" src="scripts/gameloop/main.js"></script>
+		<div class="container">
+			<h1>✏ Pen Fighting Game</h1>
+			<p>Break your opponent's pen before they break yours!</p>
+			<a href="play/" class="btn">Start Game</a>
+		</div>
 	</body>
 </html>
